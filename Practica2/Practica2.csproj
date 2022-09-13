@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compresión\Compresion.cs" />
     <Compile Include="Estructura\AVL.cs" />
     <Compile Include="Estructura\Nodo.cs" />
     <Compile Include="Modelo\Persona.cs" />

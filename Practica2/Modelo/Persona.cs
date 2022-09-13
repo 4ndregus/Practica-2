@@ -14,13 +14,14 @@ namespace Practica2.Modelo
         public string address { get; set; }
         public string[] companies { get; set; }
 
-        public Persona(string name, string dpi, string datebirth, string address, string[] companies)
+        public List<string> codificado { get; set; }
+
+        public Persona(string name, string dpi, string datebirth, string address)
         {
             this.name = name;
             this.dpi = dpi;
             this.datebirth = datebirth;
             this.address = address;
-            this.companies = companies;
         }
 
         public Comparison<Persona> CompararNombre = delegate (Persona persona1, Persona persona2)
