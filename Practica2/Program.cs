@@ -155,7 +155,7 @@ namespace Practica2
                                 codificado = listCodificado.Aggregate((x, y) => x + y);
                                 aux.Add(codificado);
                                 aux2.Add(empresa);
-                                entradas = compresion.listEntradas();
+                                entradas = compresion.listEntradas(AVLDpi.listaBusqueda[0].companies[i].Substring(AVLDpi.listaBusqueda[0].companies[i].IndexOf(":") + 2) + AVLDpi.listaBusqueda[0].dpi);
                                 AVLDpi.listaBusqueda[0].companies[i] = AVLDpi.listaBusqueda[0].companies[i] + ": " + codificado;
                                 
                                 if(apariciones ==  1)
@@ -164,8 +164,7 @@ namespace Practica2
                                     AVLDpi.listaBusqueda[0].entradas.Add(tablaEntradas);
                                     List<string>[] tablaCodificacion = new List<string>[] { aux, listCodificado, aux2 };
                                     AVLDpi.listaBusqueda[0].codificados.Add(tablaCodificacion);
-                                }
-                               
+                                }                               
                             }                           
                         }
 
@@ -201,11 +200,15 @@ namespace Practica2
                             Console.WriteLine(decodificado);
 
                             Console.ReadLine();
-                            buscar();
+                            Console.Clear();
+                            goto Menu;
                         }
                         else
                         {
                             Console.WriteLine("No hay un DPI con el codigo ingresado :c");
+                            Console.ReadLine();
+                            Console.Clear();
+                            goto Menu;
                         }                      
 
                     }

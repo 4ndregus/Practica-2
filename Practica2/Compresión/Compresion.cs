@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 namespace Practica2.Compresión
 {
     public class Compresion
-    {
-        public List<string> entradas = new List<string>();
-        public List<string> listCodificado = new List<string>();
-        
+    {       
         public Compresion(){}
         public List<string> codificar(string clave)
         {
+            List<string> entradas = new List<string>();
+            List<string> listCodificado = new List<string>();
             listCodificado.Clear();
             entradas.Clear();
             string entrada = "";
@@ -65,8 +64,58 @@ namespace Practica2.Compresión
             return listCodificado;
         }
 
-        public List<string> listEntradas()
+        public List<string> listEntradas(string clave)
         {
+            List<string> entradas = new List<string>();
+            List<string> listCodificado = new List<string>();
+            listCodificado.Clear();
+            entradas.Clear();
+            string entrada = "";
+            int llave = 0;
+            bool repetido = false;
+
+            listCodificado.Add($"0");
+            listCodificado.Add($"{clave[0]}");
+            entradas.Add("");
+            entradas.Add(clave[0] + "");
+
+            for (int i = 1; i < clave.Length; i++)
+            {
+                entrada = entrada + clave[i];
+
+                if (entradas.IndexOf(entrada) != -1)//No encontró entrada igual
+                {
+                    llave = entradas.IndexOf(entrada); //Buscar llave
+                    repetido = true;
+
+                    if (i + 1 == clave.Length)
+                    {
+                        listCodificado.Add($"{llave}");
+                        listCodificado.Add("EOF");
+                        listCodificado.Add("");
+                    }
+
+                }
+                else //Encontró entrada igual
+                {
+                    if (repetido)
+                    {
+                        listCodificado.Add($"{llave}");
+                        listCodificado.Add($"{entrada[entrada.Length - 1]}");
+                    }
+                    else
+                    {
+                        listCodificado.Add($"0");
+                        listCodificado.Add($"{entrada}");
+                    }
+                    entradas.Add(entrada);
+                    entrada = "";
+
+                    repetido = false;
+                }
+
+            }
+
             return entradas;
         }
 
