@@ -65,11 +65,13 @@ namespace Practica2
 
         public static void menu()
         {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\n-----  Menú de Operaciones  -----");
-            Console.WriteLine("1. Codificar");
-            Console.WriteLine("2. Decodificar");
-            Console.WriteLine("3. Seguir buscando\n");            
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("");
+            Console.WriteLine(" ----------  Menú de Operaciones  ---------- ");
+            Console.WriteLine("|                1.Codificar                |");
+            Console.WriteLine("|               2.Decodificar               |");
+            Console.WriteLine("|             3.Seguir buscando             |");
+            Console.WriteLine(" ------------------------------------------- ");
         }
 
 
@@ -126,12 +128,16 @@ namespace Practica2
                     string empresa = AVLDpi.listaBusqueda[0].companies[numEmpresa].Substring(AVLDpi.listaBusqueda[0].companies[numEmpresa].IndexOf(":") + 2);
 
                     int opcion;
-                    menu();                    
+                    menu();
+
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("Selecciona opción: ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     opcion = int.Parse(Console.ReadLine());
 
                     if (opcion == 1) //Codificar
                     {
-                        Console.Clear();
+                        Console.Clear(); 
                         Console.WriteLine($"DPI ingresado: {busqueda.dpi}");
                         int apariciones = 0;
                         for (int i = 0; i < AVLDpi.listaBusqueda[0].companies.Length; i++)
@@ -143,18 +149,20 @@ namespace Practica2
                                 List<string> listCodificado = new List<string>();
                                 List<string> entradas = new List<string>();
                                 List<string> aux = new List<string>();
-                                
+                                List<string> aux2 = new List<string>();
+
                                 listCodificado = compresion.codificar(AVLDpi.listaBusqueda[0].companies[i].Substring(AVLDpi.listaBusqueda[0].companies[i].IndexOf(":") + 2) + AVLDpi.listaBusqueda[0].dpi);
                                 codificado = listCodificado.Aggregate((x, y) => x + y);
                                 aux.Add(codificado);
+                                aux2.Add(empresa);
                                 entradas = compresion.listEntradas();
                                 AVLDpi.listaBusqueda[0].companies[i] = AVLDpi.listaBusqueda[0].companies[i] + ": " + codificado;
                                 
                                 if(apariciones ==  1)
                                 {
-                                    List<string>[] tablaEntradas = { aux, entradas };
+                                    List<string>[] tablaEntradas = new List<string>[] {aux, entradas, aux2 };
                                     AVLDpi.listaBusqueda[0].entradas.Add(tablaEntradas);
-                                    List<string>[] tablaCodificacion = { aux, listCodificado };
+                                    List<string>[] tablaCodificacion = new List<string>[] { aux, listCodificado, aux2 };
                                     AVLDpi.listaBusqueda[0].codificados.Add(tablaCodificacion);
                                 }
                                
@@ -167,18 +175,38 @@ namespace Practica2
                     }
                     else if (opcion == 2) //Decodificar
                     {
-                        string DPIcodificado, decodificado = "";                     
-                        Console.Write("Ingresa DPI codificado: ");
+                        string DPIcodificado, decodificado = "";
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("\nIngresa DPI codificado: ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
                         DPIcodificado = Console.ReadLine();
+                        bool encontrado = false;
+                        empresa = AVLDpi.listaBusqueda[0].companies[numEmpresa].Substring(AVLDpi.listaBusqueda[0].companies[numEmpresa].IndexOf(":") + 2);
                         for (int i = 0; i < AVLDpi.listaBusqueda[0].codificados.Count; i++)
                         {
-                            if (AVLDpi.listaBusqueda[0].codificados[i][0][0] == DPIcodificado && AVLDpi.listaBusqueda[0].entradas[i][0][0] == DPIcodificado)
+                            if (AVLDpi.listaBusqueda[0].codificados[i][0][0] == DPIcodificado && AVLDpi.listaBusqueda[0].entradas[i][0][0] == DPIcodificado && AVLDpi.listaBusqueda[0].codificados[i][2][0] == empresa.Substring(0,empresa.IndexOf(":")) && AVLDpi.listaBusqueda[0].entradas[i][2][0] == empresa.Substring(0,empresa.IndexOf(":")))
                             {
                                 decodificado = compresion.decodificar(AVLDpi.listaBusqueda[0].codificados[i][1], AVLDpi.listaBusqueda[0].entradas[i][1]);
+                                encontrado = true;
                             }
-                        }
 
-                        Console.WriteLine(decodificado);
+                        }
+                        if(encontrado == true)
+                        {
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write($"DPI: ");
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            int t = (decodificado.Length - 13);
+                            decodificado = decodificado.Substring(t);
+                            Console.WriteLine(decodificado);
+
+                            Console.ReadLine();
+                            buscar();
+                        }
+                        else
+                        {
+                            Console.WriteLine("No hay un DPI con el codigo ingresado :c");
+                        }                      
 
                     }
                     else if (opcion == 3) //Buscar
