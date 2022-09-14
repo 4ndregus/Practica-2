@@ -93,9 +93,8 @@ namespace Practica2
             {
                 //Console.WriteLine("Búsqueda guardada");
                 //Exportar archivo jsonl
-                //string codificado = AVLDpi.listaBusqueda[0].companies[0];
-                //string jsonl = JsonSerializer.Serialize(AVLDpi.listaBusqueda[0]);
-                //File.WriteAllText($"{busqueda.dpi}.jsonl", codificado);               
+                string json = JsonSerializer.Serialize(AVLDpi.listaBusqueda[0]);
+                File.WriteAllText($"{busqueda.dpi}.jsonl", json);               
             Menu:
                 try
                 {
@@ -170,6 +169,8 @@ namespace Practica2
 
                         Nodo<Persona> nuevoNodo = new Nodo<Persona>(AVLDpi.listaBusqueda[0]);
                         AVLDpi.modificar(nuevoNodo, AVLDpi.listaBusqueda[0].CompararDpi);
+                        string json2 = JsonSerializer.Serialize(AVLDpi.listaBusqueda[0]);
+                        File.WriteAllText($"{busqueda.dpi}.jsonl", json2);
                         goto Menu;
                     }
                     else if (opcion == 2) //Decodificar
