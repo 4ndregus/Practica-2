@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Practica2.Compresión;
 
 namespace Practica2.Modelo
 {
@@ -14,7 +17,15 @@ namespace Practica2.Modelo
         public string address { get; set; }
         public string[] companies { get; set; }
 
-        public List<string> codificado { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+        public List<List<string>[]> codificados { get; private set; } = new List<List<string>[]>();
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+        public List<List<string>[]> entradas {get; private set; } = new List<List<string>[]>();
+
+
+        Compresion comprimido = new Compresion();
+        
 
         public Persona(string name, string dpi, string datebirth, string address)
         {

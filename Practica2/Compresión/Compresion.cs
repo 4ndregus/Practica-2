@@ -8,8 +8,8 @@ namespace Practica2.Compresión
 {
     public class Compresion
     {
-        public static List<string> entradas = new List<string>();
-        public static List<string> listCodificado = new List<string>();
+        public List<string> entradas = new List<string>();
+        public List<string> listCodificado = new List<string>();
         
         public Compresion(){}
         public List<string> codificar(string clave)
@@ -65,20 +65,25 @@ namespace Practica2.Compresión
             return listCodificado;
         }
 
-        public void decodificar(List<string> clave)
+        public List<string> listEntradas()
+        {
+            return entradas;
+        }
+
+        public string decodificar(List<string> listCodificado, List<string> entradas)
         {
             string nextTexto;
             string decodificado = "";
             int direccion;
-            for (int i = 0; i < clave.Count; i += 2)
+            for (int i = 0; i < listCodificado.Count; i += 2)
             {
-                if (clave[i].Length == 0)
+                if (listCodificado[i].Length == 0)
                 {
                     break;
                 }
-                direccion = Convert.ToInt32(clave[i]);
+                direccion = Convert.ToInt32(listCodificado[i]);
 
-                nextTexto = clave[i + 1];
+                nextTexto = listCodificado[i + 1];
                 if (nextTexto != "EOF")
                 {
                     decodificado = decodificado + entradas[direccion] + nextTexto;
@@ -91,7 +96,7 @@ namespace Practica2.Compresión
                 nextTexto = "";
             }
 
-            Console.WriteLine($"Decodificado: {decodificado}");
+            return decodificado;
         }
     }
 }

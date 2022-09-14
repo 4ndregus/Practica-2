@@ -32,7 +32,11 @@ namespace Practica2
                 if (fila[0] == "INSERT")
                 {
                     string json = fila[1];
-                    Persona nuevaPersona = JsonSerializer.Deserialize<Persona>(json);                                   
+                    Persona nuevaPersona = JsonSerializer.Deserialize<Persona>(json);
+                    for (int i = 0; i < nuevaPersona.companies.Length; i++)
+                    {
+                        nuevaPersona.companies[i] = i + ": " + nuevaPersona.companies[i];
+                    }
                     AVLDpi.insertar(nuevaPersona, nuevaPersona.CompararDpi);
                 }
                 if (fila[0] == "DELETE")
@@ -46,6 +50,10 @@ namespace Practica2
                     string json = fila[1];
                     Persona nuevaPersona = JsonSerializer.Deserialize<Persona>(json);
                     Nodo<Persona> nuevoNodo = new Nodo<Persona>(nuevaPersona);
+                    for (int i = 0; i < nuevaPersona.companies.Length; i++)
+                    {
+                        nuevaPersona.companies[i] = i + ": " + nuevaPersona.companies[i];
+                    }
                     AVLDpi.modificar(nuevoNodo, nuevaPersona.CompararDpi);
 
                 }
@@ -93,17 +101,29 @@ namespace Practica2
                     Console.WriteLine($"PERSONA ENCONTRADA:\n");
 
                     //Mostar json de la persona
-                    var options = new JsonSerializerOptions { WriteIndented = true };
+                    var options = new JsonSerializerOptions {
+                        IgnoreReadOnlyProperties = true,
+                        WriteIndented = true                      
+                    };
+
                     string jsonl = JsonSerializer.Serialize(AVLDpi.listaBusqueda[0], options);
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(jsonl);
 
-
-                    string empresa;
+                    PedirEmpresa:
+                    int numEmpresa;
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nIngresa empresa: ");
+                    Console.Write("\nSelecciona la empresa: ");
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    empresa = Console.ReadLine();
+                    numEmpresa = int.Parse(Console.ReadLine());
+
+                    if(numEmpresa > AVLDpi.listaBusqueda[0].companies.Length - 1)
+                    {
+                        Console.WriteLine("Selecciona una empresa dentro del rango");
+                        goto PedirEmpresa;
+                    }
+
+                    string empresa = AVLDpi.listaBusqueda[0].companies[numEmpresa].Substring(AVLDpi.listaBusqueda[0].companies[numEmpresa].IndexOf(":") + 2);
 
                     int opcion;
                     menu();                    
@@ -113,16 +133,31 @@ namespace Practica2
                     {
                         Console.Clear();
                         Console.WriteLine($"DPI ingresado: {busqueda.dpi}");
+                        int apariciones = 0;
                         for (int i = 0; i < AVLDpi.listaBusqueda[0].companies.Length; i++)
                         {
-                            if (AVLDpi.listaBusqueda[0].companies[i] == empresa)
+                            if (AVLDpi.listaBusqueda[0].companies[i].Substring(AVLDpi.listaBusqueda[0].companies[i].IndexOf(":") + 2) == empresa)
                             {
+                                apariciones++;
                                 string codificado = "";
                                 List<string> listCodificado = new List<string>();
-                                listCodificado = compresion.codificar(AVLDpi.listaBusqueda[0].companies[i] + AVLDpi.listaBusqueda[0].dpi);
+                                List<string> entradas = new List<string>();
+                                List<string> aux = new List<string>();
+                                
+                                listCodificado = compresion.codificar(AVLDpi.listaBusqueda[0].companies[i].Substring(AVLDpi.listaBusqueda[0].companies[i].IndexOf(":") + 2) + AVLDpi.listaBusqueda[0].dpi);
                                 codificado = listCodificado.Aggregate((x, y) => x + y);
+                                aux.Add(codificado);
+                                entradas = compresion.listEntradas();
                                 AVLDpi.listaBusqueda[0].companies[i] = AVLDpi.listaBusqueda[0].companies[i] + ": " + codificado;
-                                listaCodificados.Add(listCodificado);
+                                
+                                if(apariciones ==  1)
+                                {
+                                    List<string>[] tablaEntradas = { aux, entradas };
+                                    AVLDpi.listaBusqueda[0].entradas.Add(tablaEntradas);
+                                    List<string>[] tablaCodificacion = { aux, listCodificado };
+                                    AVLDpi.listaBusqueda[0].codificados.Add(tablaCodificacion);
+                                }
+                               
                             }                           
                         }
 
@@ -132,12 +167,19 @@ namespace Practica2
                     }
                     else if (opcion == 2) //Decodificar
                     {
-                        List<string> codificado = new List<string>();
-                        string DPIcodificado;                     
+                        string DPIcodificado, decodificado = "";                     
                         Console.Write("Ingresa DPI codificado: ");
                         DPIcodificado = Console.ReadLine();
-                        codificado.Add(DPIcodificado);
-                        
+                        for (int i = 0; i < AVLDpi.listaBusqueda[0].codificados.Count; i++)
+                        {
+                            if (AVLDpi.listaBusqueda[0].codificados[i][0][0] == DPIcodificado && AVLDpi.listaBusqueda[0].entradas[i][0][0] == DPIcodificado)
+                            {
+                                decodificado = compresion.decodificar(AVLDpi.listaBusqueda[0].codificados[i][1], AVLDpi.listaBusqueda[0].entradas[i][1]);
+                            }
+                        }
+
+                        Console.WriteLine(decodificado);
+
                     }
                     else if (opcion == 3) //Buscar
                     {
